@@ -12,8 +12,7 @@ public class ExamRepository : GenericRepository<Exam>, IExamRepository
     {
         public static string Execute()
         {
-            // Yardımcı işlem: örnek
-            return "Exam işlemi tamamlandı!";
+            return "Execute!";
         }
     }
     public void InvalidMethod()

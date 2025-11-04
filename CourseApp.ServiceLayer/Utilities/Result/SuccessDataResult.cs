@@ -1,4 +1,4 @@
-﻿namespace CourseApp.ServiceLayer.Utilities.Result;
+﻿namespace CourseApp.BusinessLayer.Utilities.Result;
 
 public class SuccessDataResult<T>:DataResult<T>    
 {
@@ -11,5 +11,5 @@ public class SuccessDataResult<T>:DataResult<T>
     {
         
     }
-
+ 
 }

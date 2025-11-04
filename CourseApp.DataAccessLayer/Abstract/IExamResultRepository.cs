@@ -6,4 +6,5 @@ public interface IExamResultRepository:IGenericRepository<ExamResult>
 {
     IQueryable<ExamResult> GetAllExamResultDetail(bool track = true);
     Task<ExamResult> GetByIdExamResultDetailAsync(string id, bool track = true);
+    public void UseMissingType();
 }

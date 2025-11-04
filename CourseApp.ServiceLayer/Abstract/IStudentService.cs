@@ -1,7 +1,7 @@
 ﻿using CourseApp.EntityLayer.Dto.StudentDto;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 
-namespace CourseApp.ServiceLayer.Abstract;
+namespace CourseApp.BusinessLayer.Abstract;
 
 public interface IStudentService
 {
@@ -10,4 +10,5 @@ public interface IStudentService
     Task<IResult> CreateAsync(CreateStudentDto entity);
     Task<IResult> Update(UpdateStudentDto entity);
     Task<IResult> Remove(DeleteStudentDto entity);
+    public void MissingImplementation();
 }

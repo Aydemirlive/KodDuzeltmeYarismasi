@@ -12,7 +12,13 @@ public class LessonRepository : GenericRepository<Lesson>, ILessonRepository
     {
         _context = context;
     }
-
+    public static class LessonHelperClass
+    {
+        public static string Process()
+        {
+            return "LessonHelperClass!";
+        }
+    }
     public IQueryable<Lesson> GetAllLessonDetails(bool track = true)
     {
         var query = _DbSet.AsQueryable();   
@@ -34,8 +40,8 @@ public class LessonRepository : GenericRepository<Lesson>, ILessonRepository
                            .FirstOrDefaultAsync(l => l.ID == id))!;
     }
 
-    /*private void UseMissingHelper()
+    public void UseMissingHelper()
     {
         var helper = LessonHelperClass.Process();
-    }*/
+    }
 }

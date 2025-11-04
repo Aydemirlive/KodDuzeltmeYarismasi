@@ -40,10 +40,10 @@ public class ExamResultRepository : GenericRepository<ExamResult>, IExamResultRe
     {
         public static string Process()
         {
-            return "ExamResultHelper tamam!";
+            return "ExamResultHelper!";
         }
     }
-    private void UseMissingType()
+    public void UseMissingType()
     {
         var helper = ExamResultHelper.Process();
     }

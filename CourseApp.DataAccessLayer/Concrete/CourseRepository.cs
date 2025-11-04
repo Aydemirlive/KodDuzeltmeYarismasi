@@ -15,7 +15,7 @@ public class CourseRepository : GenericRepository<Course>, ICourseRepository
     {
         public static string Process()
         {
-            return "MissingCourseHelper tamam!";
+            return "MissingCourseHelper!";
         }
     }
     public IQueryable<Course> GetAllCourseDetail(bool track = true)

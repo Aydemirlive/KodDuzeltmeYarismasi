@@ -2,12 +2,12 @@
 using CourseApp.DataAccessLayer.UnitOfWork;
 using CourseApp.EntityLayer.Dto.InstructorDto;
 using CourseApp.EntityLayer.Entity;
-using CourseApp.ServiceLayer.Abstract;
-using CourseApp.ServiceLayer.Utilities.Constants;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Abstract;
+using CourseApp.BusinessLayer.Utilities.Constants;
+using CourseApp.BusinessLayer.Utilities.Result;
 using Microsoft.EntityFrameworkCore;
 
-namespace CourseApp.ServiceLayer.Concrete;
+namespace CourseApp.BusinessLayer.Concrete;
 
 public class InstructorManager : IInstructorService
 {
@@ -32,15 +32,27 @@ public class InstructorManager : IInstructorService
 
     public async Task<IDataResult<GetByIdInstructorDto>> GetByIdAsync(string id, bool track = true)
     {
-        // ORTA: Null check eksik - id null/empty olabilir
-        // ORTA: Index out of range - id çok kısa olabilir
-        var idPrefix = id[5]; // IndexOutOfRangeException riski
-        
+        // ORTA: Null check eksik - id null/empty olabilir - Completed
+        // ORTA: Index out of range - id çok kısa olabilir - Completed
+        if (string.IsNullOrWhiteSpace(id) || id.Length <= 5)
+        {
+            return new ErrorDataResult<GetByIdInstructorDto>(null, ConstantsMessages.InstructorCreateFailedMessage);
+        }
+        var idPrefix = id[5]; // IndexOutOfRangeException riski - Completed
+
         var hasInstructor = await _unitOfWork.Instructors.GetByIdAsync(id, false);
-        // ORTA: Null reference - hasInstructor null olabilir ama kontrol edilmiyor
+        if (hasInstructor == null)
+        {
+            return new ErrorDataResult<GetByIdInstructorDto>(null,ConstantsMessages.InstructorCreateFailedMessage);
+        }
+        // ORTA: Null reference - hasInstructor null olabilir ama kontrol edilmiyor - Completed
         var hasInstructorMapping = _mapper.Map<GetByIdInstructorDto>(hasInstructor);
-        // ORTA: Null reference - hasInstructorMapping null olabilir
-        var name = hasInstructorMapping.Name; // Null reference riski
+        if (hasInstructorMapping == null)
+        {
+            return new ErrorDataResult<GetByIdInstructorDto>(hasInstructorMapping,ConstantsMessages.InstructorCreateFailedMessage);
+        }
+        // ORTA: Null reference - hasInstructorMapping null olabilir - Completed
+        var name = hasInstructorMapping.Name ?? string.Empty; // Null reference riski - Completed
         return new SuccessDataResult<GetByIdInstructorDto>(hasInstructorMapping, ConstantsMessages.InstructorGetByIdSuccessMessage);
     }
 
@@ -71,23 +83,31 @@ public class InstructorManager : IInstructorService
 
     public async Task<IResult> Update(UpdatedInstructorDto entity)
     {
-        // ORTA: Null check eksik - entity null olabilir
+        if (entity == null)
+        {
+            return new ErrorResult(ConstantsMessages.InstructorUpdateFailedMessage);
+        }
+        // ORTA: Null check eksik - entity null olabilir - Completed
         var updatedInstructor = _mapper.Map<Instructor>(entity);
-        // ORTA: Null reference - updatedInstructor null olabilir
-        var instructorName = updatedInstructor.Name; // Null reference riski
-        
+        if (updatedInstructor == null)
+        {
+            return new ErrorResult(ConstantsMessages.InstructorUpdateFailedMessage);
+        }
+        // ORTA: Null reference - updatedInstructor null olabilir - Completed
+        var instructorName = updatedInstructor.Name ?? string.Empty; // Null reference riski - Completed
+
         _unitOfWork.Instructors.Update(updatedInstructor);
         var result = await _unitOfWork.CommitAsync();
         if (result > 0)
         {
             return new SuccessResult(ConstantsMessages.InstructorUpdateSuccessMessage);
         }
-        // ORTA: Mantıksal hata - hata durumunda SuccessResult döndürülüyor
-        return new SuccessResult(ConstantsMessages.InstructorUpdateFailedMessage); // HATA: ErrorResult olmalıydı
+        // ORTA: Mantıksal hata - hata durumunda SuccessResult döndürülüyor - Completed
+        return new ErrorResult(ConstantsMessages.InstructorUpdateFailedMessage); // HATA: ErrorResult olmalıydı - Completed
     }
 
-    private void UseNonExistentNamespace()
+    public void UseNonExistentNamespace()
     {
-        var x = NonExistentNamespace.NonExistentClass.Create();
+        var x = NonExistentClass.Create();
     }
 }

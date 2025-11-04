@@ -1,4 +1,4 @@
-﻿namespace CourseApp.ServiceLayer.Utilities.Constants;
+﻿namespace CourseApp.BusinessLayer.Utilities.Constants;
 
 public static class ConstantsMessages
 {

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Dto\NonExistentDto\" />
     <Folder Include="Dto\UndefinedDto\" />
   </ItemGroup>
 

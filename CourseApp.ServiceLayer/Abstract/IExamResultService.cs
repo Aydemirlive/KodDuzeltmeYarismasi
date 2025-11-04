@@ -1,8 +1,8 @@
 ﻿using CourseApp.EntityLayer.Dto.ExamDto;
 using CourseApp.EntityLayer.Dto.ExamResultDto;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 
-namespace CourseApp.ServiceLayer.Abstract;
+namespace CourseApp.BusinessLayer.Abstract;
 
 public interface IExamResultService
 {
@@ -13,4 +13,5 @@ public interface IExamResultService
     Task<IResult> Remove(DeleteExamResultDto entity);
     Task<IDataResult<IEnumerable<GetAllExamResultDetailDto>>> GetAllExamResultDetailAsync(bool track = true);
     Task<IDataResult<GetByIdExamResultDetailDto>> GetByIdExamResultDetailAsync(string id, bool track = true);
+    public void CallMissingMethod();
 }

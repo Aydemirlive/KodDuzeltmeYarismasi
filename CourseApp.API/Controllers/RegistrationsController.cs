@@ -1,5 +1,5 @@
 using CourseApp.EntityLayer.Dto.RegistrationDto;
-using CourseApp.ServiceLayer.Abstract;
+using CourseApp.BusinessLayer.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseApp.API.Controllers;
@@ -19,7 +19,7 @@ public class RegistrationsController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var result = await _registrationService.GetAllAsync();
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -30,7 +30,7 @@ public class RegistrationsController : ControllerBase
     public async Task<IActionResult> GetById(string id)
     {
         var result = await _registrationService.GetByIdAsync(id);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -41,7 +41,7 @@ public class RegistrationsController : ControllerBase
     public async Task<IActionResult> GetAllDetail()
     {
         var result = await _registrationService.GetAllRegistrationDetailAsync();
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -52,7 +52,7 @@ public class RegistrationsController : ControllerBase
     public async Task<IActionResult> GetByIdDetail(string id)
     {
         var result = await _registrationService.GetByIdRegistrationDetailAsync(id);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -62,13 +62,17 @@ public class RegistrationsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateRegistrationDto createRegistrationDto)
     {
-        // ORTA: Null check eksik - createRegistrationDto null olabilir
-        // ORTA: Tip dönüşüm hatası - decimal'i int'e direkt cast
-        var invalidPrice = (int)createRegistrationDto.Price; // ORTA: InvalidCastException
-        
+        // ORTA: Null check eksik - createRegistrationDto null olabilir - Completed
+        if (createRegistrationDto == null)
+        {
+            throw new ArgumentNullException(nameof(createRegistrationDto), "createRegistrationDto NULL");
+        }
+        // ORTA: Tip dönüşüm hatası - decimal'i int'e direkt cast - Completed
+        var invalidPrice = Convert.ToInt32(createRegistrationDto.Price); // ORTA: InvalidCastException - Completed
+
         var result = await _registrationService.CreateAsync(createRegistrationDto);
-        // KOLAY: Değişken adı typo - result yerine rsult
-        if (rsult.Success) // TYPO: result yerine rsult
+        // KOLAY: Değişken adı typo - result yerine rsult - Completed
+        if (result.IsSuccess) // TYPO: result yerine rsult - Completed
         {
             return Ok(result);
         }
@@ -79,7 +83,7 @@ public class RegistrationsController : ControllerBase
     public async Task<IActionResult> Update([FromBody] UpdatedRegistrationDto updatedRegistrationDto)
     {
         var result = await _registrationService.Update(updatedRegistrationDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -90,7 +94,7 @@ public class RegistrationsController : ControllerBase
     public async Task<IActionResult> Delete([FromBody] DeleteRegistrationDto deleteRegistrationDto)
     {
         var result = await _registrationService.Remove(deleteRegistrationDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }

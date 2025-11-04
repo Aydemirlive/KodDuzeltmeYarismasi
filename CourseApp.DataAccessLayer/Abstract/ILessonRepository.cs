@@ -7,5 +7,5 @@ public interface ILessonRepository:IGenericRepository<Lesson>
 {
     IQueryable<Lesson> GetAllLessonDetails(bool track = true);
     Task<Lesson> GetByIdLessonDetailsAsync(string id, bool track = true);
-
+    void UseMissingHelper();
 }

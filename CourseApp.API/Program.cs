@@ -1,8 +1,8 @@
 using CourseApp.DataAccessLayer.Concrete;
 using CourseApp.DataAccessLayer.UnitOfWork;
-using CourseApp.ServiceLayer.Abstract;
-using CourseApp.ServiceLayer.Concrete;
-using CourseApp.ServiceLayer.Mapping;
+using CourseApp.BusinessLayer.Abstract;
+using CourseApp.BusinessLayer.Concrete;
+using CourseApp.BusinessLayer.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,7 +63,6 @@ app.UseAuthorization();
 
 // KOLAY: Metod adı yanlış yazımı - MapControllers yerine MapContrllers
 app.MapControllers(); // TYPO: Controllers yerine Contrllers
-
 // ZOR: Memory leak - app Dispose edilmiyor ama burada normal (app.Run() son satır)
-app.Run();
 // KOLAY: Noktalı virgül eksikliği yok - burada sorun yok ama ekstra bir satır var
+app.Run();

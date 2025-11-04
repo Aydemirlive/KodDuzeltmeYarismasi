@@ -1,5 +1,5 @@
 ﻿using CourseApp.EntityLayer.Dto;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 
 namespace CourseApp.BusinessLayer.Abstract
 {

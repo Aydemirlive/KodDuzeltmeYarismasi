@@ -10,8 +10,10 @@ namespace CourseApp.DataAccessLayer.Concrete
 {
     public class NonExistentRepository : GenericRepository<NonExistent>, INonExistentRepository
     {
+        private readonly AppDbContext _context;
         public NonExistentRepository(AppDbContext context) : base(context)
         {
+            _context = context;
         }
     }
 }

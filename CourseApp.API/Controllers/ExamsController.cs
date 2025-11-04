@@ -1,6 +1,7 @@
 using CourseApp.EntityLayer.Dto.ExamDto;
-using CourseApp.ServiceLayer.Abstract;
+using CourseApp.BusinessLayer.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using CourseApp.BusinessLayer.Utilities.Result;
 
 namespace CourseApp.API.Controllers;
 
@@ -18,28 +19,33 @@ public class ExamsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        // ZOR: N+1 Problemi - Her exam için ayrı sorgu
+        // ZOR: N+1 Problemi - Her exam için ayrı sorgu - Completed
         var result = await _examService.GetAllAsync();
-        if (result.Success)
+        /*if (result.IsSuccess)
         {
-            // ORTA: Null reference - result.Data null olabilir
+            // ORTA: Null reference - result.Data null olabilir - Completed
             var exams = result.Data.ToList();
-            // ZOR: N+1 - Her exam için ayrı sorgu (örnek - gerçek implementasyon service layer'da olabilir)
+            // ZOR: N+1 - Her exam için ayrı sorgu (örnek - gerçek implementasyon service layer'da olabilir) - Completed
             foreach (var exam in exams)
             {
-                // Her exam için ayrı sorgu atılıyor - Include kullanılmamalıydı
+                // Her exam için ayrı sorgu atılıyor - Include kullanılmamalıydı - Completed
                 var details = await _examService.GetByIdAsync(exam.Id);
             }
             return Ok(result);
         }
-        return BadRequest(result);
+        return BadRequest(result);*/
+        if (result == null || !result.IsSuccess || result.Data == null || !result.Data.Any())
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
         var result = await _examService.GetByIdAsync(id);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -50,7 +56,7 @@ public class ExamsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateExamDto createExamDto)
     {
         var result = await _examService.CreateAsync(createExamDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -61,7 +67,7 @@ public class ExamsController : ControllerBase
     public async Task<IActionResult> Update([FromBody] UpdateExamDto updateExamDto)
     {
         var result = await _examService.Update(updateExamDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -72,7 +78,7 @@ public class ExamsController : ControllerBase
     public async Task<IActionResult> Delete([FromBody] DeleteExamDto deleteExamDto)
     {
         var result = await _examService.Remove(deleteExamDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }

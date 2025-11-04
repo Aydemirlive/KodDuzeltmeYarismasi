@@ -1,4 +1,4 @@
-﻿namespace CourseApp.ServiceLayer.Utilities.Result;
+﻿namespace CourseApp.BusinessLayer.Utilities.Result;
 
 public class SuccessResult:Result
 {
@@ -12,8 +12,14 @@ public class SuccessResult:Result
     {
 
     }
-
-    private void UseUndefinedUtility()
+    public static class UndefinedUtilityClass
+    {
+        public static string Create()
+        {
+            return "UndefinedUtilityClass!";
+        }
+    }
+    private static void UseUndefinedUtility()
     {
         var util = UndefinedUtilityClass.Create();
     }

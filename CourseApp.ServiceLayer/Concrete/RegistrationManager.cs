@@ -2,12 +2,13 @@
 using CourseApp.DataAccessLayer.UnitOfWork;
 using CourseApp.EntityLayer.Dto.RegistrationDto;
 using CourseApp.EntityLayer.Entity;
-using CourseApp.ServiceLayer.Abstract;
-using CourseApp.ServiceLayer.Utilities.Constants;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Abstract;
+using CourseApp.BusinessLayer.Utilities.Constants;
+using CourseApp.BusinessLayer.Utilities.Result;
 using Microsoft.EntityFrameworkCore;
+using CourseApp.EntityLayer.Dto.LessonDto;
 
-namespace CourseApp.ServiceLayer.Concrete;
+namespace CourseApp.BusinessLayer.Concrete;
 
 public class RegistrationManager : IRegistrationService
 {
@@ -39,13 +40,21 @@ public class RegistrationManager : IRegistrationService
 
     public async Task<IResult> CreateAsync(CreateRegistrationDto entity)
     {
-        // ORTA: Null check eksik - entity null olabilir
+        // ORTA: Null check eksik - entity null olabilir - Completed
+        if (entity == null)
+        {
+            return new ErrorResult(ConstantsMessages.RegistrationCreateFailedMessage);
+        }
         var createdRegistration = _mapper.Map<Registration>(entity);
-        // ORTA: Null reference - createdRegistration null olabilir
-        var registrationPrice = createdRegistration.Price; // Null reference riski
-        
-        // ZOR: Async/await anti-pattern - GetAwaiter().GetResult() deadlock'a sebep olabilir
-        _unitOfWork.Registrations.CreateAsync(createdRegistration).GetAwaiter().GetResult(); // ZOR: Anti-pattern
+        // ORTA: Null reference - createdRegistration null olabilir - Completed
+        if (createdRegistration == null)
+        {
+            return new ErrorResult(ConstantsMessages.RegistrationCreateFailedMessage);
+        }
+        var registrationPrice = createdRegistration.Price; // Null reference riski - Completed
+
+        // ZOR: Async/await anti-pattern - GetAwaiter().GetResult() deadlock'a sebep olabilir - Completed
+        await _unitOfWork.Registrations.CreateAsync(createdRegistration); // ZOR: Anti-pattern - Completed
         var result = await _unitOfWork.CommitAsync();
         if (result > 0)
         {
@@ -53,7 +62,7 @@ public class RegistrationManager : IRegistrationService
         }
 
         // KOLAY: Noktalı virgül eksikliği
-        return new ErrorResult(ConstantsMessages.RegistrationCreateFailedMessage) // TYPO: ; eksik
+        return new ErrorResult(ConstantsMessages.RegistrationCreateFailedMessage); // TYPO: ; eksik - Completed
     }
 
     public async Task<IResult> Remove(DeleteRegistrationDto entity)
@@ -70,40 +79,50 @@ public class RegistrationManager : IRegistrationService
 
     public async Task<IResult> Update(UpdatedRegistrationDto entity)
     {
-        // ORTA: Null check eksik - entity null olabilir
+        // ORTA: Null check eksik - entity null olabilir - Completed
+        if (entity == null)
+        {
+            return new ErrorResult(ConstantsMessages.RegistrationUpdateFailedMessage);
+        }
         var updatedRegistration = _mapper.Map<Registration>(entity);
-        
-        // ORTA: Tip dönüşüm hatası - decimal'i int'e direkt cast
-        var invalidPrice = (int)updatedRegistration.Price; // ORTA: InvalidCastException
-        
+
+        // ORTA: Tip dönüşüm hatası - decimal'i int'e direkt cast - Completed
+        var invalidPrice = Convert.ToInt32(updatedRegistration.Price); // ORTA: InvalidCastException - Completed
+
         _unitOfWork.Registrations.Update(updatedRegistration);
         var result = await _unitOfWork.CommitAsync();
         if (result > 0)
         {
             return new SuccessResult(ConstantsMessages.RegistrationUpdateSuccessMessage);
         }
-        // ORTA: Mantıksal hata - hata durumunda SuccessResult döndürülüyor
-        return new SuccessResult(ConstantsMessages.RegistrationUpdateFailedMessage); // HATA: ErrorResult olmalıydı
+        // ORTA: Mantıksal hata - hata durumunda SuccessResult döndürülüyor - Completed
+        return new ErrorResult(ConstantsMessages.RegistrationUpdateFailedMessage); // HATA: ErrorResult olmalıydı - Completed
     }
 
     public async Task<IDataResult<IEnumerable<GetAllRegistrationDetailDto>>> GetAllRegistrationDetailAsync(bool track = true)
     {
-        // ZOR: N+1 Problemi - Include kullanılmamış, lazy loading aktif
-        var registrationData = await _unitOfWork.Registrations.GetAllRegistrationDetail(track).ToListAsync();
-        
-        // ZOR: N+1 - Her registration için Course ve Student ayrı sorgu ile çekiliyor
-        // Örnek: registration.Course?.CourseName her iterasyonda DB sorgusu
-        
-        if(!registrationData.Any())
+        // ZOR: N+1 Problemi - Include kullanılmamış, lazy loading aktif - Completed
+        //var registrationData = await _unitOfWork.Registrations.GetAllRegistrationDetail(track).ToListAsync(); - Completed
+        var registrationData = await _unitOfWork.Registrations.GetAll(false)
+                                        .Include(c => c.Course)
+                                        .Include(c=>c.Student)
+                                        .ToListAsync();
+        // ZOR: N+1 - Her registration için Course ve Student ayrı sorgu ile çekiliyor - Completed
+        // Örnek: registration.Course?.CourseName her iterasyonda DB sorgusu - Completed
+
+        if (!registrationData.Any())
         {
             return new ErrorDataResult<IEnumerable<GetAllRegistrationDetailDto>>(null,ConstantsMessages.RegistrationListFailedMessage);
         }
 
         var registrationDataMapping = _mapper.Map<IEnumerable<GetAllRegistrationDetailDto>>(registrationData);
-        
-        // ORTA: Index out of range - registrationDataMapping boş olabilir
-        var firstRegistration = registrationDataMapping.ToList()[0]; // IndexOutOfRangeException riski
-        
+        if (registrationDataMapping == null)
+        {
+            return new ErrorDataResult<IEnumerable<GetAllRegistrationDetailDto>>(null, ConstantsMessages.RegistrationListFailedMessage);
+        }
+        // ORTA: Index out of range - registrationDataMapping boş olabilir - Completed
+        var firstRegistration = registrationDataMapping.ToList().FirstOrDefault(); // IndexOutOfRangeException riski - Completed
+
         return new SuccessDataResult<IEnumerable<GetAllRegistrationDetailDto>>(registrationDataMapping, ConstantsMessages.RegistrationListSuccessMessage);  
     }
 

@@ -9,5 +9,5 @@ public interface IGenericRepository<T> where T : class
     Task CreateAsync(T entity);
     void Update(T entity);
     void Remove(T entity);
-
+    public void UseUndefinedType();
 }

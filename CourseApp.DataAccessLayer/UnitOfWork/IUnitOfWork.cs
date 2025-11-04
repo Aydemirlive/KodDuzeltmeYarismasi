@@ -1,4 +1,5 @@
 ﻿using CourseApp.DataAccessLayer.Abstract;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CourseApp.DataAccessLayer.UnitOfWork
 {
@@ -13,5 +14,6 @@ namespace CourseApp.DataAccessLayer.UnitOfWork
         IRegistrationRepository Registrations { get; }
 
         Task<int> CommitAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CourseApp.BusinessLayer.Abstract;
 using CourseApp.DataAccessLayer.Abstract;
-using CourseApp.ServiceLayer.Abstract;
 
 namespace CourseApp.BusinessLayer.Concrete
 {
@@ -20,9 +19,7 @@ namespace CourseApp.BusinessLayer.Concrete
 
         public void UseUndefinedType()
         {
-            // Repository’yi kullan
-            var allUndefined = _undefinedRepository.GetAll().ToList();
-            Console.WriteLine($"Toplam undefined kayıt sayısı: {allUndefined.Count}");
+           
+        }
         }
     }
-}

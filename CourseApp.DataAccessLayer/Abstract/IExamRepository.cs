@@ -4,4 +4,5 @@ namespace CourseApp.DataAccessLayer.Abstract;
 
 public interface IExamRepository:IGenericRepository<Exam>
 {
+    public void InvalidMethod();
 }

@@ -5,7 +5,9 @@ namespace CourseApp.DataAccessLayer.Concrete;
 
 public class InstructorRepository : GenericRepository<Instructor>, IInstructorRepository
 {
-    public InstructorRepository(AppDbContext context) 
+    private readonly AppDbContext _context;
+    public InstructorRepository(AppDbContext context) : base(context)
     {
+        _context = context;
     }
 }

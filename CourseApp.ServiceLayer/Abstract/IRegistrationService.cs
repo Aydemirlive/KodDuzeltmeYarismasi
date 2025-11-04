@@ -1,7 +1,7 @@
 ﻿using CourseApp.EntityLayer.Dto.RegistrationDto;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 
-namespace CourseApp.ServiceLayer.Abstract;
+namespace CourseApp.BusinessLayer.Abstract;
 
 public interface IRegistrationService
 {
@@ -12,4 +12,5 @@ public interface IRegistrationService
     Task<IResult> Remove(DeleteRegistrationDto entity);
     Task<IDataResult<IEnumerable<GetAllRegistrationDetailDto>>> GetAllRegistrationDetailAsync(bool track = true);
     Task<IDataResult<GetByIdRegistrationDetailDto>> GetByIdRegistrationDetailAsync(string id, bool track = true);
+    public void AccessNonExistentProperty();
 }

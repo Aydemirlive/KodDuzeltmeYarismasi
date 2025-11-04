@@ -3,7 +3,7 @@ using CourseApp.EntityLayer.Dto.InstructorDto;
 using CourseApp.EntityLayer.Dto.LessonDto;
 using CourseApp.EntityLayer.Entity;
 
-namespace CourseApp.ServiceLayer.Mapping;
+namespace CourseApp.BusinessLayer.Mapping;
 
 public class LessonMapping:Profile
 {
@@ -18,6 +18,6 @@ public class LessonMapping:Profile
         CreateMap<Lesson,GetByIdLessonDetailDto>()
                 .ForMember(dst => dst.CourseName,opt => opt.MapFrom(src => src.Course!.CourseName))
                 .ReverseMap();
-        CreateMap<Lesson, NonExistentDtoType>();
+        CreateMap<Lesson,UpdatedInstructorDto>();
     }
 }

@@ -2,13 +2,13 @@
 using CourseApp.DataAccessLayer.UnitOfWork;
 using CourseApp.EntityLayer.Dto.ExamResultDto;
 using CourseApp.EntityLayer.Entity;
-using CourseApp.ServiceLayer.Abstract;
-using CourseApp.ServiceLayer.Utilities.Constants;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Abstract;
+using CourseApp.BusinessLayer.Utilities.Constants;
+using CourseApp.BusinessLayer.Utilities.Result;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace CourseApp.ServiceLayer.Concrete;
+namespace CourseApp.BusinessLayer.Concrete;
 
 public class ExamResultManager : IExamResultService
 {
@@ -43,20 +43,28 @@ public class ExamResultManager : IExamResultService
 
     public async Task<IResult> CreateAsync(CreateExamResultDto entity)
     {
-        // ORTA: Null check eksik - entity null olabilir
+        // ORTA: Null check eksik - entity null olabilir - Completed
+        if (entity == null)
+        {
+            throw new ArgumentNullException(nameof(entity));
+        }
         var addedExamResultMapping = _mapper.Map<ExamResult>(entity);
-        // ORTA: Null reference - addedExamResultMapping null olabilir
-        var score = addedExamResultMapping.Score; // Null reference riski
-        
+        // ORTA: Null reference - addedExamResultMapping null olabilir - Completed
+        if (addedExamResultMapping == null)
+        {
+            throw new ArgumentNullException(nameof(addedExamResultMapping));
+        }
+        var score = addedExamResultMapping.Grade; // Null reference riski - Completed
+
         await _unitOfWork.ExamResults.CreateAsync(addedExamResultMapping);
-        // ZOR: Async/await anti-pattern - GetAwaiter().GetResult() deadlock'a sebep olabilir
-        var result = _unitOfWork.CommitAsync().GetAwaiter().GetResult(); // ZOR: Anti-pattern
+        // ZOR: Async/await anti-pattern - GetAwaiter().GetResult() deadlock'a sebep olabilir - Completed
+        var result = await _unitOfWork.CommitAsync(); // ZOR: Anti-pattern - Completed
         if (result > 0)
         {
             return new SuccessResult(ConstantsMessages.ExamResultCreateSuccessMessage);
         }
         // KOLAY: Noktalı virgül eksikliği
-        return new ErrorResult(ConstantsMessages.ExamResultCreateFailedMessage) // TYPO: ; eksik
+        return new ErrorResult(ConstantsMessages.ExamResultCreateFailedMessage); // TYPO: ; eksik - Completed
     }
 
     public async Task<IResult> Remove(DeleteExamResultDto entity)
@@ -85,22 +93,25 @@ public class ExamResultManager : IExamResultService
 
     public async Task<IDataResult<IEnumerable<GetAllExamResultDetailDto>>> GetAllExamResultDetailAsync(bool track = true)
     {
-        // ZOR: N+1 Problemi - Include kullanılmamış, lazy loading aktif
-        var examResultList = await _unitOfWork.ExamResults.GetAllExamResultDetail(false).ToListAsync();
-        
-        // ZOR: N+1 - Her examResult için Student ve Exam ayrı sorgu ile çekiliyor
-        // Örnek: examResult.Student?.Name ve examResult.Exam?.Name her iterasyonda DB sorgusu
-        
-        if (!examResultList.Any())
+        // ZOR: N+1 Problemi - Include kullanılmamış, lazy loading aktif - Completed
+        //var examResultList = await _unitOfWork.ExamResults.GetAllExamResultDetail(false).ToListAsync();
+        var examResultList = await _unitOfWork.ExamResults.GetAll(false)
+                                        .Include(c => c.Student)
+                                        .Include(c=>c.Exam)
+                                        .ToListAsync();
+        // ZOR: N+1 - Her examResult için Student ve Exam ayrı sorgu ile çekiliyor - Completed
+        // Örnek: examResult.Student?.Name ve examResult.Exam?.Name her iterasyonda DB sorgusu - Completed
+
+        if (examResultList == null || !examResultList.Any())
         {
             return new ErrorDataResult<IEnumerable<GetAllExamResultDetailDto>>(null, ConstantsMessages.ExamResultListFailedMessage);
         }
 
         var examResultListMapping = _mapper.Map<IEnumerable<GetAllExamResultDetailDto>>(examResultList);
-        
-        // ORTA: Index out of range - examResultListMapping boş olabilir
-        var firstResult = examResultListMapping.ToList()[0]; // IndexOutOfRangeException riski
-        
+
+        // ORTA: Index out of range - examResultListMapping boş olabilir - Completed
+        var firstResult = examResultListMapping.ToList().FirstOrDefault(); // IndexOutOfRangeException riski - Completed
+
         return new SuccessDataResult<IEnumerable<GetAllExamResultDetailDto>>(examResultListMapping, ConstantsMessages.ExamResultListSuccessMessage);
     }
 
@@ -109,7 +120,7 @@ public class ExamResultManager : IExamResultService
         throw new NotImplementedException();
     }
 
-    private void CallMissingMethod()
+    public void CallMissingMethod()
     {
         MissingMethodHelper.Execute();
     }

@@ -2,7 +2,7 @@
 using CourseApp.EntityLayer.Dto.InstructorDto;
 using CourseApp.EntityLayer.Entity;
 
-namespace CourseApp.ServiceLayer.Mapping;
+namespace CourseApp.BusinessLayer.Mapping;
 
 public class InstructorMapping:Profile
 {
@@ -11,6 +11,6 @@ public class InstructorMapping:Profile
         CreateMap<Instructor,GetAllInstructorDto>().ReverseMap();
         CreateMap<Instructor,GetByIdInstructorDto>().ReverseMap();
         CreateMap<Instructor,DeletedInstructorDto>().ReverseMap();
-        CreateMap<Instructor, UndefinedMappingDto>();
+        CreateMap<Instructor,UpdatedInstructorDto>();
     }
 }

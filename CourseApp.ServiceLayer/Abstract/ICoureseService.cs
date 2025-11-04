@@ -1,9 +1,9 @@
 ﻿using CourseApp.EntityLayer.Dto.CourseDto;
 using CourseApp.EntityLayer.Entity;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 using System.Linq.Expressions;
 
-namespace CourseApp.ServiceLayer.Abstract;
+namespace CourseApp.BusinessLayer.Abstract;
 
 public interface ICourseService
 {

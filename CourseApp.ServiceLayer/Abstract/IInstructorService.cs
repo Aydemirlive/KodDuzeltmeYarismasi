@@ -1,8 +1,8 @@
 ﻿using CourseApp.EntityLayer.Dto.ExamDto;
 using CourseApp.EntityLayer.Dto.InstructorDto;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 
-namespace CourseApp.ServiceLayer.Abstract;
+namespace CourseApp.BusinessLayer.Abstract;
 
 public interface IInstructorService
 {
@@ -11,4 +11,5 @@ public interface IInstructorService
     Task<IResult> CreateAsync(CreatedInstructorDto entity);
     Task<IResult> Update(UpdatedInstructorDto entity);
     Task<IResult> Remove(DeletedInstructorDto entity);
+    public void UseNonExistentNamespace();
 }

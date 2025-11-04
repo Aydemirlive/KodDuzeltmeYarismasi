@@ -1,5 +1,6 @@
 ﻿using CourseApp.DataAccessLayer.Abstract;
 using CourseApp.DataAccessLayer.Concrete;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CourseApp.DataAccessLayer.UnitOfWork;
 
@@ -47,5 +48,9 @@ public class UnitOfWork : IUnitOfWork
     {
         var repo = new NonExistentRepository(_context);
         repo.GetAll();
+    }
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _context.Database.BeginTransactionAsync();
     }
 }

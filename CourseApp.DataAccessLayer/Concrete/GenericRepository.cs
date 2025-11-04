@@ -60,11 +60,17 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         _dbSet.Update(entity);
     }
-    /*
+    public static class UndefinedRepository
+    {
+        public static string Process()
+        {
+            return "UndefinedRepository!";
+        }
+    }
     public void UseUndefinedType()
     {
-        var x = new UndefinedRepository();
-        x.Process();
-    }*/
+        var x = UndefinedRepository.Process();
+        //x.Process();
+    }
 
 }

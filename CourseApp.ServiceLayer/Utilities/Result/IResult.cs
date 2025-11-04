@@ -1,4 +1,4 @@
-﻿namespace CourseApp.ServiceLayer.Utilities.Result;
+﻿namespace CourseApp.BusinessLayer.Utilities.Result;
 
 public interface IResult
 {

@@ -1,6 +1,7 @@
 using CourseApp.EntityLayer.Dto.ExamResultDto;
-using CourseApp.ServiceLayer.Abstract;
+using CourseApp.BusinessLayer.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using CourseApp.BusinessLayer.Utilities.Result;
 
 namespace CourseApp.API.Controllers;
 
@@ -18,29 +19,34 @@ public class ExamResultsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        // ZOR: N+1 Problemi - Her examResult için ayrı sorgu
-        var result = await _examResultService.GetAllAsync();
-        // ORTA: Null reference - result.Data null olabilir
-        if (result.Success && result.Data != null)
+        // ZOR: N+1 Problemi - Her examResult için ayrı sorgu - Completed
+        var result = await _examResultService.GetAllExamResultDetailAsync();
+        // ORTA: Null reference - result.Data null olabilir - Completed
+        if (result.IsSuccess && result.Data != null)
         {
-            // ZOR: N+1 - Her examResult için detay çekiliyor
-            var examResults = result.Data.ToList();
+            // ZOR: N+1 - Her examResult için detay çekiliyor - Completed
+            /*r examResults = result.Data.ToList();
             foreach (var examResult in examResults)
             {
-                // Her examResult için ayrı sorgu
+                // Her examResult için ayrı sorgu - Completed
                 var detail = await _examResultService.GetByIdExamResultDetailAsync(examResult.Id);
+            }
+            return Ok(result);*/
+            if (result == null || !result.IsSuccess || result.Data == null || !result.Data.Any())
+            {
+                return BadRequest(result);
             }
             return Ok(result);
         }
-        // KOLAY: Metod adı yanlış yazımı - BadRequest yerine BadReqest
-        return BadReqest(result); // TYPO: Request yerine Reqest
+        // KOLAY: Metod adı yanlış yazımı - BadRequest yerine BadReqest - Completed
+        return BadRequest(result); // TYPO: Request yerine Reqest - Completed
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(string id)
     {
         var result = await _examResultService.GetByIdAsync(id);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -51,7 +57,7 @@ public class ExamResultsController : ControllerBase
     public async Task<IActionResult> GetAllDetail()
     {
         var result = await _examResultService.GetAllExamResultDetailAsync();
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -62,7 +68,7 @@ public class ExamResultsController : ControllerBase
     public async Task<IActionResult> GetByIdDetail(string id)
     {
         var result = await _examResultService.GetByIdExamResultDetailAsync(id);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -73,7 +79,7 @@ public class ExamResultsController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateExamResultDto createExamResultDto)
     {
         var result = await _examResultService.CreateAsync(createExamResultDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -84,7 +90,7 @@ public class ExamResultsController : ControllerBase
     public async Task<IActionResult> Update([FromBody] UpdateExamResultDto updateExamResultDto)
     {
         var result = await _examResultService.Update(updateExamResultDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }
@@ -95,7 +101,7 @@ public class ExamResultsController : ControllerBase
     public async Task<IActionResult> Delete([FromBody] DeleteExamResultDto deleteExamResultDto)
     {
         var result = await _examResultService.Remove(deleteExamResultDto);
-        if (result.Success)
+        if (result.IsSuccess)
         {
             return Ok(result);
         }

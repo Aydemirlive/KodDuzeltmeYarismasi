@@ -2,7 +2,7 @@
 using CourseApp.EntityLayer.Dto.ExamDto;
 using CourseApp.EntityLayer.Entity;
 
-namespace CourseApp.ServiceLayer.Mapping;
+namespace CourseApp.BusinessLayer.Mapping;
 
 public class ExamMapping:Profile
 {
@@ -11,6 +11,6 @@ public class ExamMapping:Profile
         CreateMap<Exam,GetAllExamDto>().ReverseMap();
         CreateMap<Exam,CreateExamDto>().ReverseMap();
         CreateMap<Exam,DeleteExamDto>().ReverseMap();
-        CreateMap<Exam, MissingMappingDto>().ReverseMap();
+        CreateMap<Exam,UpdateExamDto>().ReverseMap();
     }
 }

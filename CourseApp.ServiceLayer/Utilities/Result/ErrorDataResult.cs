@@ -1,4 +1,4 @@
-﻿namespace CourseApp.ServiceLayer.Utilities.Result;
+﻿namespace CourseApp.BusinessLayer.Utilities.Result;
 
 public class ErrorDataResult<T>:DataResult<T>
 {
@@ -6,7 +6,7 @@ public class ErrorDataResult<T>:DataResult<T>
     {
         
     }
-    public ErrorDataResult(T data) : base(data,false,default)
+    public ErrorDataResult(EntityLayer.Entity.Instructor? hasInstructor, T data) : base(data,false,default)
     {
         
     }

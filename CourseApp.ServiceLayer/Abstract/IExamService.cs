@@ -1,8 +1,8 @@
 ﻿using CourseApp.EntityLayer.Dto.CourseDto;
 using CourseApp.EntityLayer.Dto.ExamDto;
-using CourseApp.ServiceLayer.Utilities.Result;
+using CourseApp.BusinessLayer.Utilities.Result;
 
-namespace CourseApp.ServiceLayer.Abstract;
+namespace CourseApp.BusinessLayer.Abstract;
 
 public interface IExamService
 {
