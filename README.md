@@ -105,8 +105,54 @@ Bu projedeki hatalar **tamamen kasıtlı** olarak eklenmiştir.
 Her hata, ilgili satır yakınında **yorum satırı (// [BugSeed])** etiketiyle işaretlenmiştir.  
 Katılımcıların görevi, bu hataları bulup düzeltmek ve projeyi başarıyla derleyip çalışır hale getirmektir.
 
+
 📅 **Son Güncelleme:** 2025-02-11  
 📦 **Toplam Hata Sayısı:** 75+  
 
 💪 **Başarılar dileriz — iyi kod avı!**
 
+ORTA SEVİYE HATALAR
+
+1.Null Reference Exception
+Örnek: var courseName = createCourseDto?.CourseName ?? "Değer Null!";  Nesnenin null kontrolü yapılmış ve eğer nullsa default değer verilmiştir.
+
+2.Index Out of Range Exception:
+Örnek: if (!string.IsNullOrEmpty(courseName))
+{
+    firstChar = courseName[0];
+} Nesnenin null kontrolü yapılmış ve eğer boş değilse ilk değerin ataması yapılmıştır.
+
+3.Invalid Cast Exception:
+Örnek: if (int.TryParse(createRegistrationDto.Price.ToString(), out int price))
+{
+    var invalidPrice = price;
+} Burada tip dönüştürme başarılıysa true döner price değerine atanır false ise hata vererek kodun çalışmasını bozmaz.
+
+4. Mantıksal Hatalar
+Örnek: if (result > 0)
+{
+    return new SuccessResult(ConstantsMessages.RegistrationUpdateSuccessMessage);
+}
+return new ErrorResult(ConstantsMessages.RegistrationUpdateFailedMessage); Burada başarılı sonuçta SuccessResult hatada ise ErrorResult döndürülerek çözüldü.
+
+ZOR SEVİYE HATALAR
+
+1.N+1 Query Problemleri
+Örnek: var registrationData = await _unitOfWork.Registrations.GetAll(false)
+                                .Include(c => c.Course)
+                                .Include(c=>c.Student)
+                                .ToListAsync(); Burada Include() metodu ile EF Core sayesinde ilişkili tabloları tek seferde çekerek hatayı çözdük.
+2.Async/Await Anti-Pattern
+Örnek: // await _unitOfWork.Registrations.CreateAsync(createdRegistration); Burada asenkron metod çağırıldığı için wait kullanıldı thread bloklanmadan işlem doğal olarak devam ettirildi deadlock riski ortadan kalktı.
+
+3.Katman İhlali
+Örnek: //using CourseApp.DataAccessLayer.Concrete; // ZOR: Katman ihlali - Controller'dan direkt DataAccessLayer'a erişim Burada API Controllerdan direkt DataLyer'a referans kaldırıldı ve BusinessLayerda ilgili interface (private readonly IStudentService _studentService;) kullanıldı.
+
+4.Memory Leak
+Örnek: public StudentsController(IStudentService studentService)
+{
+    _studentService = studentService;
+} Burada AppDbContext öğesini katman ihlali dolayısıyla kaldırdığımızdan buradaki işlemi BusinessLayer'a taşıdık bu yüzden context dispose etmeye gerek kalmadı ve memory leak ortadak kaldırıldı.
+
+5.DbUpdateException 
+örnek:public IQueryable<Course>? Courses { get; set; } Burada EF Core navigation property’leri ICollection<T> olarak beklerken biz IQueryable<Course> olarak kullandığımızdan foreign key i çoğulluyor bu yüzden public ICollection<Course>? Courses { get; set; } = []; olarak güncelleyip hatayı kaldırıyoruz.
