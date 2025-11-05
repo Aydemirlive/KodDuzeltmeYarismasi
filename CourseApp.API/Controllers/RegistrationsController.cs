@@ -68,8 +68,11 @@ public class RegistrationsController : ControllerBase
             throw new ArgumentNullException(nameof(createRegistrationDto), "createRegistrationDto NULL");
         }
         // ORTA: Tip dönüşüm hatası - decimal'i int'e direkt cast - Completed
-        var invalidPrice = Convert.ToInt32(createRegistrationDto.Price); // ORTA: InvalidCastException - Completed
-
+        //var invalidPrice = Convert.ToInt32(createRegistrationDto.Price); // ORTA: InvalidCastException - Completed
+        if (int.TryParse(createRegistrationDto.Price.ToString(), out int price))
+        {
+            var invalidPrice = price;
+        }
         var result = await _registrationService.CreateAsync(createRegistrationDto);
         // KOLAY: Değişken adı typo - result yerine rsult - Completed
         if (result.IsSuccess) // TYPO: result yerine rsult - Completed

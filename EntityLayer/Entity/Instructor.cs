@@ -17,5 +17,5 @@ public class Instructor : BaseEntity
     public string? PhoneNumber { get; set; }
 
     //navigation property
-    public IQueryable<Course>? Courses { get; set; }
+    public ICollection<Course>? Courses { get; set; } = [];
 }
